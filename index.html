@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Untuk Kamu ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  text-align: center;
+}
+
+.page {
+  display: none;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* PAGE 1 */
+#page1 {
+  display: flex;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color: white;
+}
+
+/* PAGE 2 */
+#page2 {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white;
+}
+
+/* GAME */
+#game {
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white;
+  position: relative;
+}
+
+#gameBox {
+  width: 100px;
+  height: 100px;
+  background: white;
+  position: absolute;
+  border-radius: 15px;
+  cursor: pointer;
+}
+
+/* PAGE 3 */
+#page3 {
+  background: linear-gradient(to top, #ff758c, #ff7eb3);
+  color: white;
+}
+
+#noBtn {
+  position: absolute;
+  transition: 0.2s;
+}
+
+/* BUTTON */
+button {
+  padding: 12px 20px;
+  border-radius: 20px;
+  border: none;
+  background: #ff4d6d;
+  color: white;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+/* INPUT */
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  margin-top: 10px;
+}
+
+/* HEART FLOAT */
+.heart {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  transform: rotate(45deg);
+  animation: floatUp 6s linear infinite;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+.heart::before { top: -10px; }
+.heart::after { left: -10px; }
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(45deg); opacity: 1; }
+  100% { transform: translateY(-10vh) rotate(45deg); opacity: 0; }
+}
+
+/* LOVE BURST */
+@keyframes pop {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- MUSIC -->
+<audio id="bgm" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
+</audio>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page" style="display:flex;">
+  <h2>🔐 Masukkan Password</h2>
+  <p>Hint: tanggal spesial kamu 😏</p>
+  <input type="password" id="pass">
+  <button onclick="checkPass()">Masuk</button>
+  <p id="error"></p>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+  <h2>💌 Kamu punya pesan spesial</h2>
+  <button onclick="startGame()">Buka Pesan ❤️</button>
+</div>
+
+<!-- GAME -->
+<div id="game" class="page">
+  <h2>Tangkap kotaknya dulu 😆</h2>
+  <div id="gameBox"></div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page">
+  <h1>Aku suka kamu ❤️</h1>
+  <p>Mau nggak jadi bagian dari hidup aku?</p>
+
+  <button onclick="yes()">Mau ❤️</button>
+  <button id="noBtn" onmouseover="moveNo()">Nggak 😈</button>
+
+  <h2 id="result"></h2>
+</div>
+
+<script>
+
+let gameRunning = true;
+let moveTimeout;
+let noScale = 1;
+
+/* PASSWORD */
+function checkPass() {
+  let pass = document.getElementById("pass").value;
+  if(pass === "27022011") {
+    nextPage("page1","page2");
+  } else {
+    document.getElementById("error").innerText = "Salah 😜";
+  }
+}
+
+/* NAV */
+function nextPage(a,b){
+  document.getElementById(a).style.display="none";
+  document.getElementById(b).style.display="flex";
+}
+
+/* GAME */
+function startGame(){
+  nextPage("page2","game");
+  setTimeout(moveBox, 300);
+}
+
+function moveBox(){
+  if(!gameRunning) return;
+
+  let box = document.getElementById("gameBox");
+
+  let maxX = window.innerWidth - 100;
+  let maxY = window.innerHeight - 100;
+
+  box.style.left = Math.random() * maxX + "px";
+  box.style.top = Math.random() * maxY + "px";
+
+  moveTimeout = setTimeout(moveBox, 1000);
+}
+
+document.getElementById("gameBox").onclick = function(){
+  gameRunning = false;
+  clearTimeout(moveTimeout);
+  nextPage("game","page3");
+}
+
+/* CONFESSION */
+function moveNo(){
+  let btn = document.getElementById("noBtn");
+
+  let maxX = window.innerWidth - btn.offsetWidth;
+  let maxY = window.innerHeight - btn.offsetHeight;
+
+  btn.style.left = Math.random() * maxX + "px";
+  btn.style.top = Math.random() * maxY + "px";
+
+  if(noScale > 0.5){
+    noScale -= 0.05;
+    btn.style.transform = "scale(" + noScale + ")";
+  }
+
+  document.getElementById("result").innerText = "Yakin mau nolak aku? 😢";
+}
+
+function yes(){
+  document.getElementById("result").innerText = "YEAY ❤️ AKU SENENG BANGET!!";
+
+  document.getElementById("bgm").play();
+
+  for(let i=0; i<20; i++){
+    setTimeout(createHeartBurst, i*100);
+  }
+}
+
+/* LOVE BURST */
+function createHeartBurst(){
+  let heart = document.createElement("div");
+  heart.innerText = "❤️";
+  heart.style.position = "absolute";
+  heart.style.left = Math.random()*window.innerWidth + "px";
+  heart.style.top = Math.random()*window.innerHeight + "px";
+  heart.style.fontSize = "20px";
+  heart.style.animation = "pop 1s ease-out forwards";
+  document.body.appendChild(heart);
+
+  setTimeout(()=>heart.remove(),1000);
+}
+
+/* BACKGROUND HEART */
+function createHeart(){
+  let heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.style.left = Math.random()*window.innerWidth+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+}
+setInterval(createHeart,300);
+
+</script>
+
+</body>
+</html>
